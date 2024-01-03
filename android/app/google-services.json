@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "647979977158",
+    "project_id": "allyvalley-83",
+    "storage_bucket": "allyvalley-83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647979977158:android:c672747c6c865c778fcac7",
+        "android_client_info": {
+          "package_name": "com.example.allyvalley"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCykhjpeEYeFanVgSOsW4TnpjEsMtIidH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
