@@ -1,6 +1,7 @@
 import 'package:allyvalley/auth/UserInfo.dart';
 import 'package:allyvalley/colors.dart';
 import 'package:allyvalley/screens/HomeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +69,7 @@ class SignInScreen extends StatelessWidget {
                         height: 70,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: kgreenBlue,
+                              backgroundColor: kgreenBlue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               )),
@@ -83,8 +84,17 @@ class SignInScreen extends StatelessWidget {
                           ),
                           onPressed: () async {
                             Map? user = await signInWithGoogle();
-                            newUser = user?['newUser'];
-                            if (newUser == true) {
+                            bool exists = false;
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user?['email'])
+                                .get()
+                                .then((DocumentSnapshot documentSnapshot) {
+                              if (documentSnapshot.exists) {
+                                exists = true;
+                              }
+                            });
+                            if (exists==false) {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

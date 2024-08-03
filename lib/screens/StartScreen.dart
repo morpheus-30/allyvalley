@@ -1,6 +1,8 @@
 import 'package:allyvalley/auth/SignInScreen.dart';
+import 'package:allyvalley/auth/UserInfo.dart';
 import 'package:allyvalley/colors.dart';
 import 'package:allyvalley/screens/HomeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +61,7 @@ class StartScreen extends StatelessWidget {
                                 fontFamily: 'Spotify',
                               )),
                           style: ElevatedButton.styleFrom(
-                            primary: kgreenBlue,
+                            backgroundColor: kgreenBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -78,7 +80,21 @@ class StartScreen extends StatelessWidget {
               ),
             );
           } else {
-            return HomeScreen();
+            bool exists = true;
+            // FirebaseFirestore.instance
+            //     .collection('users')
+            //     .doc(snapshot.data.email)
+            //     .get()
+            //     .then((DocumentSnapshot documentSnapshot) {
+            //   if (documentSnapshot.exists) {
+            //     exists = true;
+            //   }
+            // });
+            return exists ? HomeScreen() : UserInfoScreen(
+              userEmail: snapshot.data.email,
+              userName: snapshot.data.displayName,
+
+            );
           }
         }
         return Scaffold(

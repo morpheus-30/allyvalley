@@ -38,13 +38,16 @@ dependencies:
   firebase_core: ^2.22.0
   firebase_auth: ^4.14.0
   google_sign_in: ^6.1.6
-  nearby_connections: ^4.0.1
   sizer: ^2.0.15
   font_awesome_flutter: ^10.6.0
   geolocator: ^10.1.0
   http: ^1.1.0
   cloud_firestore: ^4.13.2
   timeago: ^3.6.0
+  permission_handler: ^11.3.1
+  device_info_plus: ^10.1.0
+  all_bluetooth: ^0.1.0
+  mac_address: ^1.0.0
 
 dev_dependencies:
   flutter_test:

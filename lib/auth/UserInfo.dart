@@ -4,11 +4,13 @@ import 'package:allyvalley/NetworkHelper.dart';
 import 'package:allyvalley/colors.dart';
 import 'package:allyvalley/constants.dart';
 import 'package:allyvalley/screens/HomeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UserInfoScreen extends StatefulWidget {
   String userEmail;
   String userName;
+  String bluetoothAddress = "";
   UserInfoScreen({required this.userEmail, required this.userName});
 
   @override
@@ -38,7 +40,56 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               style: TextStyle(fontFamily: 'Spotify', fontSize: 40),
             ),
             SizedBox(
-              height: 50,
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Bluetooth Address',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontFamily: 'Spotify', fontSize: 25),
+                ),
+                IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('How to get your bluetooth address?'),
+                            content: Text(
+                                '1. Go to settings\n2. Click on About Phone\n3. Click on Status\n4. Click on Bluetooth Address\n5. Copy the address and paste it here'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Ok'))
+                            ],
+                          );
+                        });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  widget.bluetoothAddress = value;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Bluetooth Address',
+              ),
+            ),
+            SizedBox(
+              height: 10,
             ),
             Text(
               'What are your interests?',
@@ -335,7 +386,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: kgreenBlue,
+                    backgroundColor: kgreenBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     )),
@@ -433,7 +484,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         );
                       },
                     );
-                  } else {
+                  }else if(widget.bluetoothAddress==""){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Please enter your bluetooth address'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Ok'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } 
+                  
+                  else {
                     Map<String, dynamic> data = {
                       "email": widget.userEmail,
                       "name": widget.userName,
@@ -443,28 +513,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       "language": languages,
                       "interests": interests,
                       "phone": "${phoneNumber}",
-                      "about": about
+                      "about": about,
+                      "status": "offline",
+                      "bluetooth": widget.bluetoothAddress,
                     };
 
-                    NetworkHelper networkHelper = NetworkHelper();
-                    networkHelper
-                        .postData(NGROKsignUpUrl,
-                            {"Content-Type": "application/json"}, data)
-                        .then((value) {
-                      print(value);
-                    }).onError((error, stackTrace) {
-                      print(error);
-                      print(stackTrace);
-                    });
-                    print(widget.userEmail);
-                    print(widget.userName);
-                    print(interests);
-                    print(languages);
-                    print(profession);
-                    print(phoneNumber);
-                    print(age);
-                    print(gender);
-                    print(NGROKsignUpUrl);
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(widget.userEmail)
+                        .set(data);
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => HomeScreen()));
                   }
